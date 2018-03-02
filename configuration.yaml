@@ -11,7 +11,7 @@ homeassistant:
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/Paris
   # Customization file
-  customize: !include customize.yaml
+  customize: !include config/customize.yaml
   # https://home-assistant.io/docs/configuration/packages/
   packages: !include_dir_named config/packages/
 
@@ -35,5 +35,4 @@ customizer:
 tts:
   - platform: google
 
-zwave:
-  usb_path: /dev/ttyACM0
+

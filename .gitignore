@@ -16,6 +16,8 @@
 *.bkp
 *.session
 www/people/*.png
+config/packages/zwave.yaml
+config/packages/remote.yaml
 
 automations.yaml
 secrets.yaml
@@ -26,6 +28,7 @@ plex.conf
 .spotify-token-cache
 .google.token
 .uuid
+.HA_VERSION
 
 temp
 tts
