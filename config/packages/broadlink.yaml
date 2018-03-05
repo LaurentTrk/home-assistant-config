@@ -1,0 +1,17 @@
+sensor:
+  - platform: broadlink
+    update_interval: 60
+    host: !secret broadlink_ip
+    mac: !secret broadlink_mac
+    monitored_conditions:
+      - temperature       
+
+switch:
+  - platform: broadlink
+    host: !secret broadlink_ip
+    mac: !secret broadlink_mac
+    # switches:
+      # tv:
+        # friendly_name: "Phillips Tv"
+        # command_on: 'JgAcAB0dHB44HhweGx4cHR06HB0cHhwdHB8bHhwADQUAAAAAAAAAAAAAAAA='
+        # command_off: 'JgAaABweOR4bHhwdHB4dHRw6HhsdHR0dOTocAA0FAAAAAAAAAAAAAAAAAAA='

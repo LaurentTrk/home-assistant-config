@@ -1,0 +1,123 @@
+## Devices status HASS Module
+
+##################################################
+## Customizes
+##################################################
+
+homeassistant:
+  customize:  
+    sensor.broadlink_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret broadlink_ip
+    sensor.google_home_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret googlehome_ip
+    sensor.tv_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret tv_ip
+    sensor.printer_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret printer_ip
+    sensor.harmony_hub_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret harmony_ip
+    sensor.hue_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret hue_ip
+    sensor.nas_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret nas_ip
+    sensor.bbox_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret bbox_ip
+    sensor.r7000_template:
+      custom_ui_state_card: state-card-custom-ui
+      extra_data_template: !secret r7000_ip
+
+
+##################################################
+## Sensors
+##################################################
+device_tracker:
+  - platform: ping
+    hosts:
+      bbox: !secret bbox_ip
+      router: !secret r7000_ip
+      nas: !secret nas_ip
+      hue: !secret hue_ip
+      
+group:
+  devices_status:
+    name: Devices Status
+    entities:
+      - sensor.broadlink_template
+      - sensor.google_home_template
+      - sensor.tv_template    
+      - sensor.harmony_hub_template    
+      - sensor.printer_template    
+      - sensor.hue_template    
+      - sensor.nas_template    
+      - sensor.bbox_template    
+      - sensor.r7000_template    
+      
+sensor:
+  - platform: template
+    sensors:
+      broadlink_template:
+        friendly_name: 'Broadlink (IR)'
+        value_template: "{{ 'on' if is_state('device_tracker.broadlink', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:remote' if is_state('device_tracker.broadlink', 'home') else 'mdi:close-circle' }}"
+      google_home_template:
+        friendly_name: 'Google Home'
+        value_template: "{{ 'on' if is_state('device_tracker.googlehome', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:google-home' if is_state('device_tracker.googlehome', 'home') else 'mdi:close-circle' }}"
+      tv_template:
+        friendly_name: 'Philips TV'
+        value_template: "{{ 'on' if is_state('device_tracker.android80a32195addfa34b', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:television' if is_state('device_tracker.android80a32195addfa34b', 'home') else 'mdi:close-circle' }}"
+      harmony_hub_template:
+        friendly_name: 'Harmony Hub (Télécommande)'
+        value_template: "{{ 'on' if is_state('device_tracker.harmonyhub', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:remote' if is_state('device_tracker.harmonyhub', 'home') else 'mdi:close-circle' }}"
+      printer_template:
+        friendly_name: 'Canon MG7150 (Imprimante)'
+        value_template: "{{ 'on' if is_state('device_tracker.mg7150', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:printer' if is_state('device_tracker.mg7150', 'home') else 'mdi:close-circle' }}"
+      nas_template:
+        friendly_name: 'ReadyNAS (Serveur)'
+        value_template: "{{ 'on' if is_state('device_tracker.nas', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:server-network' if is_state('device_tracker.nas', 'home') else 'mdi:close-circle' }}"
+      hue_template:
+        friendly_name: 'Hue Hub (Lumières)'
+        value_template: "{{ 'on' if is_state('device_tracker.hue', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:lightbulb-on-outline' if is_state('device_tracker.hue', 'home') else 'mdi:close-circle' }}"
+      bbox_template:
+        friendly_name: 'BBox (Internet)'
+        value_template: "{{ 'on' if is_state('device_tracker.bbox', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:network' if is_state('device_tracker.bbox', 'home') else 'mdi:close-circle' }}"
+      r7000_template:
+        friendly_name: 'R7000 (Routeur Wifi)'
+        value_template: "{{ 'on' if is_state('device_tracker.router', 'home') else 'off' }}"
+        icon_template: "{{ 'mdi:wifi' if is_state('device_tracker.router', 'home') else 'mdi:close-circle' }}"
+
+##################################################
+## Automations
+##################################################
+
+## https://github.com/CCOSTAN/Home-AssistantConfig/blob/a2485d167bdd0892617797fa8a0a87ce2a5eb9f2/automation/System/device_status.yaml
+
+automation:
+  - alias: 'Device Status'
+    hide_entity: True
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.broadlink_template
+          #- sensor.androidtv_template
+        to: 'off_x'
+        for:
+          minutes: 10
+    action:
+      - service: script.notify_plus
+        data_template:
+          msg: "{{ trigger.entity_id.split('.')[1]|replace('_template', '') }} is {{ trigger.to_state.state }}"

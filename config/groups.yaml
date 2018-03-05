@@ -1,0 +1,100 @@
+#------------------------------------------------------------------------------
+# Views
+#------------------------------------------------------------------------------
+
+home:
+  view: yes
+  name: Home
+  icon: mdi:home
+  entities:
+    # - sensor.living_room_smoke_sensor_temperature
+    - sensor.broadlink_sensor_temperature
+    - group.living_room_heating
+    - media_player.spotify
+
+media:
+  view: yes
+  name: Media
+  icon: mdi:television
+  entities:
+    - group.harmony_remote
+    - media_player.spotify
+
+devices:
+  view: yes
+  name: Info
+  icon: mdi:mdi:router-wireless
+  entities:
+    - group.links_dev
+    - group.devices_status
+
+info:
+  view: yes
+  name: Info
+  icon: mdi:information
+  entities:
+    - group.environment
+    - group.internet
+    - group.stats
+    
+setup:
+  view: yes
+  name: Setup
+  icon: mdi:settings
+  entities:
+    - sensor.processor_use
+    - sensor.memory_free
+    - sensor.disk_free_
+    - group.system
+    - group.scripts
+#    - group.tests
+#    - group.profile
+    
+#------------------------------------------------------------------------------
+# Groups
+#------------------------------------------------------------------------------
+internet:
+  name: Internet
+  entities:
+    - sensor.speedtest_download
+    - sensor.speedtest_upload
+    - sensor.speedtest_ping
+    - sensor.external_ip
+
+stats:
+  name: Statistics
+  entities:
+    - sensor.stats_tv1
+    #- sensor.stats_work1
+
+system:
+  name: System
+  entities:
+    - script.restart_ha
+    - sensor.time_template
+    - sensor.since_last_boot_template
+    - sensor.version
+
+scripts:
+  name: Scripts
+  entities:
+    - group.all_scripts
+    
+links_dev:
+  name: Links
+  entities:
+    - weblink.plex
+    - weblink.repo
+    - weblink.readynas
+    - weblink.router
+    
+living_room:
+  name: Salon
+  entities:
+    - switch.switch_living_room_tv
+    - switch.switch_living_room_heating
+    - light.salon    
+  
+  
+  
+  

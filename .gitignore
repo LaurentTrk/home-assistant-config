@@ -24,6 +24,9 @@ secrets.yaml
 known_devices.yaml
 ip_bans.yaml
 google_calendars.yaml
+customize.yaml
+scripts.yaml
+entity_registry.yaml
 plex.conf
 .spotify-token-cache
 .google.token

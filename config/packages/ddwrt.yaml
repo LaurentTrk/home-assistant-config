@@ -1,0 +1,5 @@
+device_tracker:
+  - platform: ddwrt
+    host: !secret ddwrt_ip
+    username: !secret ddwrt_username
+    password: !secret ddwrt_password

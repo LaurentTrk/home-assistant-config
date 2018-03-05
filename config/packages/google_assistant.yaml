@@ -1,0 +1,26 @@
+google_assistant:
+  project_id: !secret gapp_projectid
+  client_id: !secret gapp_clientid
+  access_token: !secret gapp_authid
+  api_key: !secret gapp_apikey
+  expose_by_default: false
+  exposed_domains:
+    - switch
+    - group
+    - script
+    - light
+  entity_config:
+    switch.switch_living_room_tv:
+      name: Télé
+      aliases:
+        - Télévision
+      room: Salon
+      expose: true
+    switch.switch_living_room_heating:
+      name: Chauffage
+      room: Salon
+      expose: true
+    # group.living_room:
+      # name: Salon
+      # room: Salon
+      # expose: true

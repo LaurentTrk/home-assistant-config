@@ -1,0 +1,135 @@
+group:
+  living_room_heating:
+    name: Chauffage
+    entities:
+      # - sensor.living_room_heating_power
+      - sensor.living_room_smoke_sensor_temperature
+      - sensor.broadlink_sensor_temperature
+      - sensor.living_room_smoke_sensor_battery_level
+      - sensor.heating_switch_energy
+      - input_text.tiles_heating
+
+input_text:
+  tiles_heating:
+    name: Tiles Heating  
+
+# Idle : 2
+# Charge Pellet: 380
+# Allumage : 350
+# Demarrage/Travail : 80-150
+# Stopping : 21
+    
+switch:
+  - platform: template
+    switches:
+      switch_living_room_heating:
+        friendly_name: Chauffage
+        icon_template: mdi:thermometer-lines
+        value_template: "{{ states.sensor.greenwave_powernode_1_port_power.attributes.power_consumption > 30 }}"
+        turn_on:
+          service: script.turn_on
+          entity_id: script.start_stop_heating
+        turn_off:
+          service: script.turn_on
+          entity_id: script.start_stop_heating    
+    
+sensor:
+  - platform: template
+    sensors:
+      living_room_heating_power:
+        friendly_name: "Puissance Chauffage"
+        unit_of_measurement: 'W'
+        value_template: "{{ (states.sensor.greenwave_powernode_1_port_power.attributes.power_consumption + states('sensor.greenwave_powernode_1_port_previous_reading_2')|float )/2 }}"
+    
+homeassistant:
+  customize_glob:
+    "*.*":
+      custom_ui_state_card: state-card-custom-ui  
+    sensor.living_room_heating_power:
+      state_card_mode: badges
+    sensor.living_room_smoke_sensor_temperature:
+      state_card_mode: badges
+    sensor.broadlink_sensor_temperature:
+      state_card_mode: badges
+    sensor.living_room_smoke_sensor_battery_level:
+      state_card_mode: badges
+    sensor.heating_switch_energy:
+      state_card_mode: badges
+
+  customize:  
+    input_text.tiles_heating:
+      custom_ui_state_card: state-card-tiles
+      config:
+        columns: 2
+        column_width: 100px
+        row_height: 24px
+        entities:
+
+          # - entity: script.do_nothing
+            # label_template: "if (entities['sensor.living_room_heating_power'].state < 30) return 'Arrêté'; else if (entities['sensor.living_room_heating_power'].state < 100) return 'Module'; else if (entities['sensor.living_room_heating_power'].state < 200) return 'Travaille'; else return 'Allumage'; "
+            # color: grey
+            # column_span: 2
+            # row_span: 2
+          - entity: switch.switch_living_room_heating
+            label_template: "if (state === 'on') return 'Arrêter'; else return 'Allumer'"
+            icon: mdi:power
+            color_on: red
+            color_off: blue
+            column_span: 2
+            row_span: 2
+          - entity: script.increase_temperature_heating
+            color: silver
+            icon: mdi:arrow-up-bold
+            row_span: 2
+          - entity: script.increase_temperature_heating
+            icon: mdi:arrow-up-bold
+            color: silver
+            row_span: 2
+          - entity: script.do_nothing
+            icon: mdi:thermometer-lines
+            label_template: "return entities['sensor.living_room_smoke_sensor_temperature'].state + '°C' "
+            color: grey
+            row_span: 2
+          - entity: script.do_nothing
+            icon_template: "if (entities['sensor.living_room_heating_power'].state < 30) return 'mdi:gauge-empty'; else if (entities['sensor.living_room_heating_power'].state < 100) return 'mdi:gauge-low'; else if (entities['sensor.living_room_heating_power'].state < 200) return 'mdi:gauge'; else return 'mdi:gauge-full'; "
+            label_template: "return Math.round(entities['sensor.living_room_heating_power'].state) + 'W'"
+            color: grey
+            row_span: 2
+          - entity: script.decrease_temperature_heating
+            icon: mdi:arrow-down-bold
+            color: silver
+            row_span: 2
+          - entity: script.decrease_temperature_heating
+            icon: mdi:arrow-down-bold
+            color: silver
+            row_span: 2    
+            
+script:
+  start_stop_heating:
+    alias: Allumer le chauffage
+    sequence:
+      - service: !secret broadlink_send_packet_service
+        data:
+          packet: 
+            - "JgAYANlTbDcZHRk5NhwbOBsbGzY3GzY2NQANBQ=="
+            - "JgQYANlTbDcZHRk5NhwbOBsbGzY3GzY2NQANBQ=="
+            - "JgQYANlTbDcZHRk5NhwbOBsbGzY3GzY2NQANBQ=="
+
+  increase_temperature_heating:
+    alias: Augmenter la T°
+    sequence:
+      - service: !secret broadlink_send_packet_service
+        data:
+          packet: 
+             - "JgAaANlSbTYbGxw2Nhw2GxsbGzY3GxsbGxs2AA0FAAAAAAAAAAAAAAAAAAA="
+
+  decrease_temperature_heating:
+    alias: Baisser la T°
+    sequence:
+      - service: !secret broadlink_send_packet_service
+        data:
+          packet: 
+             - "JgAUANlabTYbGxs3bDcbGxs2iDY2AA0FAAAAAA=="
+
+            
+            

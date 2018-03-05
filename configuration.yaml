@@ -11,7 +11,7 @@ homeassistant:
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/Paris
   # Customization file
-  customize: !include config/customize.yaml
+  customize: !include customize.yaml
   # https://home-assistant.io/docs/configuration/packages/
   packages: !include_dir_named config/packages/
 
@@ -20,6 +20,7 @@ http: !include config/http.yaml
 group: !include config/groups.yaml
 automation: !include config/automations.yaml
 script: !include config/scripts.yaml
+weblink: !include config/weblinks.yaml
 
 config:
 updater:
@@ -29,10 +30,12 @@ history:
 logbook:
 cloud:
 
+recorder:
+#  db_url: !secret mariadb_url 
+  
 customizer:
   custom_ui: local
 
 tts:
   - platform: google
-
-
+    language: 'fr'
